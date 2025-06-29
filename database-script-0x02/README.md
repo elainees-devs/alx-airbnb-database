@@ -6,7 +6,7 @@ This project provides **sample seed data** for an AirBnB-style database. The dat
 
 ## 📦 Sample Data Overview
 
-The `sample-data.sql` file inserts **4 records** into each of the following tables:
+The `seed.sql` file inserts **4 records** into each of the following tables:
 
 | Table     | Description                                      |
 |-----------|--------------------------------------------------|
