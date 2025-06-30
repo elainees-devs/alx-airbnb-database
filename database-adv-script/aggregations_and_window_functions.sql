@@ -18,24 +18,16 @@ GROUP BY u.user_id, u.first_name, u.last_name
 ORDER BY total_bookings DESC;
 
 
--- Rank all properties based on how many times they've been booked
+-- Rank properties by total number of bookings using ROW_NUMBER
 SELECT 
   p.property_id,
   p.name AS property_name,
-  
-  -- Count bookings per property
   COUNT(b.booking_id) AS total_bookings,
-
-  -- Assign a ranking based on booking count (highest = rank 1)
-  RANK() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_rank
+  
+  -- Assign a unique sequential rank (no ties)
+  ROW_NUMBER() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_rank
 
 FROM PROPERTY p
-
--- Join bookings for each property (if any)
 LEFT JOIN BOOKING b ON p.property_id = b.property_id
-
--- Group by property to count bookings per listing
 GROUP BY p.property_id, p.name
-
--- Order by rank (optional, for display purposes)
 ORDER BY booking_rank;
