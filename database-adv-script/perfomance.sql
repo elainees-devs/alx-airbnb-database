@@ -7,6 +7,14 @@
 -- - Which property was booked (PROPERTY)
 -- - Payment details (if any)
 
+-- ========================================================
+-- Filtered Query: Recent Paid Bookings with Details
+-- ========================================================
+
+-- This version includes filters:
+-- - Only include bookings after Jan 1, 2024
+-- - Only include bookings that have a payment record
+
 SELECT 
   b.booking_id,
   b.start_date,
@@ -37,8 +45,12 @@ INNER JOIN USER u ON b.user_id = u.user_id
 -- Join the property
 INNER JOIN PROPERTY p ON b.property_id = p.property_id
 
--- Payment is optional (LEFT JOIN)
-LEFT JOIN PAYMENT pay ON b.booking_id = pay.booking_id
+-- Join only bookings that have payments
+INNER JOIN PAYMENT pay ON b.booking_id = pay.booking_id
+
+-- Apply filters
+WHERE b.start_date >= '2025-01-01'
+  AND pay.amount IS NOT NULL
 
 ORDER BY b.created_at DESC;
 
