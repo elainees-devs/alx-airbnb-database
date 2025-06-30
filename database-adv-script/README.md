@@ -45,6 +45,9 @@ Each section outlines the relationships queried and what kind of data each JOIN 
 ### 5. BOOKING ↔ PAYMENT
 **Purpose:** Show all bookings with payment information, if available. Useful to identify unpaid bookings.
 
+### 6. PROPERTY ↔ REVIEW
+Purpose: Retrieve all properties and their reviews, including properties that have no reviews. This is useful for displaying unrated properties alongside reviewed ones.
+
 ---
 
 ## 🌐 FULL OUTER JOIN Queries
