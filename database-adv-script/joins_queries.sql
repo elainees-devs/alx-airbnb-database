@@ -117,6 +117,17 @@ SELECT
 FROM BOOKING b
 LEFT JOIN PAYMENT pay ON b.booking_id = pay.booking_id;
 
+-- PROPERTY ↔ REVIEW
+SELECT 
+  p.property_id,
+  p.name AS property_name,
+  r.review_id,
+  r.rating,
+  r.comment,
+  r.created_at
+FROM PROPERTY p
+LEFT JOIN REVIEW r ON p.property_id = r.property_id;
+
 
 -- FULL OUTER JOIN Queries
 -- USER ↔ PROPERTY
