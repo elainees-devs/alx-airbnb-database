@@ -98,16 +98,86 @@ Each section outlines the relationships queried and what kind of data each opera
 
 ---
 
-## 🧠 Why This Matters
-
-Understanding the differences between `INNER JOIN`, `LEFT JOIN`, `FULL OUTER JOIN`, and subqueries is essential for:
-
-* Handling incomplete or inconsistent data
-* Writing clean, maintainable, and performant SQL
-* Building accurate reports and dashboards
-* Debugging and auditing relational data across normalized schemas
+Here’s the updated section for your `README.md` to document the two new analytical SQL queries using `GROUP BY` and window functions.
 
 ---
+
+## 📊 Analytical Queries
+
+This section explains how aggregation and window functions are used to derive insights from the booking data.
+
+---
+
+### 1. **Total Number of Bookings per User**
+
+**Purpose:**
+Identify how many bookings each user has made. This is useful for understanding user engagement and for generating user-based reports.
+
+**Logic:**
+
+* Uses the `COUNT()` function to total bookings.
+* Groups results by user.
+* Uses a `LEFT JOIN` to include users who haven’t made any bookings.
+
+**Example Use Cases:**
+
+* Generating leaderboard of most active guests.
+* Highlighting inactive users.
+
+---
+
+#### 2. **Rank Properties by Booking Frequency**
+
+**Purpose:**
+Rank each property based on how many bookings it has received. This helps identify the most and least popular properties.
+
+**Logic:**
+
+* Uses `COUNT()` to aggregate bookings per property.
+* Applies a `RANK()` window function to assign rank based on booking totals.
+* Includes properties with zero bookings using `LEFT JOIN`.
+
+**Alternative:**
+Replace `RANK()` with `ROW_NUMBER()` if you want a strict sequential ranking without ties.
+
+**Example Use Cases:**
+
+* Displaying top-listed properties on the homepage.
+* Performance analysis for hosts and properties.
+
+---
+
+Let me know if you'd like to include visual examples or export the updated README as a file. Here's the Git commit message for this update:
+
+```
+git commit -m "docs: update README with analytical SQL queries using GROUP BY and window functions"
+```
+
+
+🧠 Why This Matters
+Understanding SQL JOINs and analytical queries is essential for working effectively with relational databases.
+
+This includes mastering:
+
+INNER JOIN, LEFT JOIN, FULL OUTER JOIN — to control which data relationships are shown or preserved
+
+GROUP BY and aggregation functions like COUNT() — to summarize and report on key metrics
+
+Window functions like RANK() or ROW_NUMBER() — to analyze trends, rank items, or create user-based leaderboards
+
+These skills are critical for:
+
+✅ Handling incomplete or inconsistent data
+
+✨ Writing clean, maintainable, and performant SQL
+
+📊 Building accurate reports, dashboards, and data visualizations
+
+🐛 Debugging and auditing relationships across normalized schemas
+
+📈 Gaining business insights from data (e.g., top users, most booked properties, inactive accounts)
+
+In production systems like booking platforms, analytics dashboards, or admin panels, these tools enable data-driven decisions and effective monitoring.
 
 ## 👩🏽‍💻 Author
 
