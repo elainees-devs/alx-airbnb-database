@@ -13,6 +13,7 @@ Each section outlines the relationships queried and what kind of data each opera
 
   * Properties with an average rating greater than 4.0
   * Users who have made more than 3 bookings
+* **`aggregations_and_window_functions.sql`** – Contains analytical queries using GROUP BY, COUNT(), ROW_NUMBER(), and RANK() to derive business insights.
 
 ---
 
