@@ -130,16 +130,29 @@ LEFT JOIN REVIEW r ON p.property_id = r.property_id
 ORDER BY p.name;
 
 
--- FULL OUTER JOIN Queries
+-- FULL OUTER JOIN Queries (MySQL-compatible)
+
 -- USER ↔ PROPERTY
 SELECT 
   u.user_id,
-  u.first_name || ' ' || u.last_name AS user_name,
+  CONCAT(u.first_name, ' ', u.last_name) AS user_name,
   u.role,
   p.property_id,
   p.name AS property_name
 FROM USER u
-FULL OUTER JOIN PROPERTY p ON u.user_id = p.host_id;
+LEFT JOIN PROPERTY p ON u.user_id = p.host_id
+
+UNION
+
+SELECT 
+  u.user_id,
+  CONCAT(u.first_name, ' ', u.last_name) AS user_name,
+  u.role,
+  p.property_id,
+  p.name AS property_name
+FROM USER u
+RIGHT JOIN PROPERTY p ON u.user_id = p.host_id;
+
 
 -- PROPERTY ↔ LOCATION
 SELECT 
@@ -149,17 +162,41 @@ SELECT
   l.city,
   l.country
 FROM PROPERTY p
-FULL OUTER JOIN LOCATION l ON p.location_id = l.location_id;
+LEFT JOIN LOCATION l ON p.location_id = l.location_id
+
+UNION
+
+SELECT 
+  p.property_id,
+  p.name AS property_name,
+  l.location_id,
+  l.city,
+  l.country
+FROM PROPERTY p
+RIGHT JOIN LOCATION l ON p.location_id = l.location_id;
+
 
 -- BOOKING ↔ USER
 SELECT 
   b.booking_id,
   u.user_id,
-  u.first_name || ' ' || u.last_name AS guest_name,
+  CONCAT(u.first_name, ' ', u.last_name) AS guest_name,
   b.start_date,
   b.end_date
 FROM BOOKING b
-FULL OUTER JOIN USER u ON b.user_id = u.user_id;
+LEFT JOIN USER u ON b.user_id = u.user_id
+
+UNION
+
+SELECT 
+  b.booking_id,
+  u.user_id,
+  CONCAT(u.first_name, ' ', u.last_name) AS guest_name,
+  b.start_date,
+  b.end_date
+FROM BOOKING b
+RIGHT JOIN USER u ON b.user_id = u.user_id;
+
 
 -- BOOKING ↔ PROPERTY
 SELECT 
@@ -169,7 +206,19 @@ SELECT
   b.start_date,
   b.end_date
 FROM BOOKING b
-FULL OUTER JOIN PROPERTY p ON b.property_id = p.property_id;
+LEFT JOIN PROPERTY p ON b.property_id = p.property_id
+
+UNION
+
+SELECT 
+  b.booking_id,
+  p.property_id,
+  p.name AS property_name,
+  b.start_date,
+  b.end_date
+FROM BOOKING b
+RIGHT JOIN PROPERTY p ON b.property_id = p.property_id;
+
 
 -- PAYMENT ↔ BOOKING
 SELECT 
@@ -180,17 +229,42 @@ SELECT
   b.start_date,
   b.end_date
 FROM PAYMENT pay
-FULL OUTER JOIN BOOKING b ON pay.booking_id = b.booking_id;
+LEFT JOIN BOOKING b ON pay.booking_id = b.booking_id
+
+UNION
+
+SELECT 
+  pay.payment_id,
+  b.booking_id,
+  pay.amount,
+  pay.payment_method,
+  b.start_date,
+  b.end_date
+FROM PAYMENT pay
+RIGHT JOIN BOOKING b ON pay.booking_id = b.booking_id;
+
 
 -- REVIEW ↔ USER
 SELECT 
   r.review_id,
   u.user_id,
-  u.first_name || ' ' || u.last_name AS reviewer_name,
+  CONCAT(u.first_name, ' ', u.last_name) AS reviewer_name,
   r.rating,
   r.comment
 FROM REVIEW r
-FULL OUTER JOIN USER u ON r.user_id = u.user_id;
+LEFT JOIN USER u ON r.user_id = u.user_id
+
+UNION
+
+SELECT 
+  r.review_id,
+  u.user_id,
+  CONCAT(u.first_name, ' ', u.last_name) AS reviewer_name,
+  r.rating,
+  r.comment
+FROM REVIEW r
+RIGHT JOIN USER u ON r.user_id = u.user_id;
+
 
 -- REVIEW ↔ PROPERTY
 SELECT 
@@ -200,15 +274,35 @@ SELECT
   r.rating,
   r.comment
 FROM REVIEW r
-FULL OUTER JOIN PROPERTY p ON r.property_id = p.property_id;
+LEFT JOIN PROPERTY p ON r.property_id = p.property_id
 
--- MESSAGE ↔ USER
+UNION
+
+SELECT 
+  r.review_id,
+  p.property_id,
+  p.name AS property_name,
+  r.rating,
+  r.comment
+FROM REVIEW r
+RIGHT JOIN PROPERTY p ON r.property_id = p.property_id;
+
+
+-- MESSAGE ↔ USER (sender)
 SELECT 
   m.message_id,
   sender.user_id,
-  sender.first_name || ' ' || sender.last_name AS sender_name,
+  CONCAT(sender.first_name, ' ', sender.last_name) AS sender_name,
   m.message_body
 FROM MESSAGE m
-FULL OUTER JOIN USER sender ON m.sender_id = sender.user_id;
+LEFT JOIN USER sender ON m.sender_id = sender.user_id
 
+UNION
 
+SELECT 
+  m.message_id,
+  sender.user_id,
+  CONCAT(sender.first_name, ' ', sender.last_name) AS sender_name,
+  m.message_body
+FROM MESSAGE m
+RIGHT JOIN USER sender ON m.sender_id = sender.user_id;
