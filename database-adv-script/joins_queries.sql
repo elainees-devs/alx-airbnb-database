@@ -126,7 +126,8 @@ SELECT
   r.comment,
   r.created_at
 FROM PROPERTY p
-LEFT JOIN REVIEW r ON p.property_id = r.property_id;
+LEFT JOIN REVIEW r ON p.property_id = r.property_id
+ORDER BY p.name;
 
 
 -- FULL OUTER JOIN Queries
