@@ -3,7 +3,19 @@
 -- ============================
 
 -- Add index on role for WHERE filtering
-CREATE INDEX IF NOT EXISTS idx_user_role ON USER(role);
+SET @idx := 'idx_user_role';
+SET @tbl := 'USER';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = @tbl AND index_name = @idx
+    ),
+    'SELECT "Index idx_user_role already exists.";',
+    'CREATE INDEX idx_user_role ON USER(role);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 
 -- ============================
@@ -11,12 +23,59 @@ CREATE INDEX IF NOT EXISTS idx_user_role ON USER(role);
 -- ============================
 
 -- Foreign key joins
-CREATE INDEX IF NOT EXISTS idx_booking_user_id ON BOOKING(user_id);
-CREATE INDEX IF NOT EXISTS idx_booking_property_id ON BOOKING(property_id);
+SET @idx := 'idx_booking_user_id';
+SET @tbl := 'BOOKING';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = @tbl AND index_name = @idx
+    ),
+    'SELECT "Index idx_booking_user_id already exists.";',
+    'CREATE INDEX idx_booking_user_id ON BOOKING(user_id);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @idx := 'idx_booking_property_id';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = 'BOOKING' AND index_name = @idx
+    ),
+    'SELECT "Index idx_booking_property_id already exists.";',
+    'CREATE INDEX idx_booking_property_id ON BOOKING(property_id);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- For date-based filtering or ordering
-CREATE INDEX IF NOT EXISTS idx_booking_start_date ON BOOKING(start_date);
-CREATE INDEX IF NOT EXISTS idx_booking_end_date ON BOOKING(end_date);
+SET @idx := 'idx_booking_start_date';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = 'BOOKING' AND index_name = @idx
+    ),
+    'SELECT "Index idx_booking_start_date already exists.";',
+    'CREATE INDEX idx_booking_start_date ON BOOKING(start_date);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @idx := 'idx_booking_end_date';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = 'BOOKING' AND index_name = @idx
+    ),
+    'SELECT "Index idx_booking_end_date already exists.";',
+    'CREATE INDEX idx_booking_end_date ON BOOKING(end_date);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 
 -- ============================
@@ -24,20 +83,43 @@ CREATE INDEX IF NOT EXISTS idx_booking_end_date ON BOOKING(end_date);
 -- ============================
 
 -- Foreign key joins
-CREATE INDEX IF NOT EXISTS idx_property_host_id ON PROPERTY(host_id);
-CREATE INDEX IF NOT EXISTS idx_property_location_id ON PROPERTY(location_id);
+SET @idx := 'idx_property_host_id';
+SET @tbl := 'PROPERTY';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = @tbl AND index_name = @idx
+    ),
+    'SELECT "Index idx_property_host_id already exists.";',
+    'CREATE INDEX idx_property_host_id ON PROPERTY(host_id);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SET @idx := 'idx_property_location_id';
+SET @sql := (
+  SELECT IF(
+    EXISTS (
+      SELECT 1 FROM information_schema.statistics 
+      WHERE table_schema = DATABASE() AND table_name = 'PROPERTY' AND index_name = @idx
+    ),
+    'SELECT "Index idx_property_location_id already exists.";',
+    'CREATE INDEX idx_property_location_id ON PROPERTY(location_id);'
+  )
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 
 -- ============================
 -- Performance Measurement
 -- ============================
--- Run EXPLAIN ANALYZE on two key queries
 
 -- 1. Total Number of Bookings per User
 EXPLAIN ANALYZE
 SELECT 
   u.user_id,
-  u.first_name || ' ' || u.last_name AS user_name,
+  CONCAT(u.first_name, ' ', u.last_name) AS user_name,
   COUNT(b.booking_id) AS total_bookings
 FROM USER u
 LEFT JOIN BOOKING b ON u.user_id = b.user_id
