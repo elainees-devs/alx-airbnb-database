@@ -148,12 +148,6 @@ Replace `RANK()` with `ROW_NUMBER()` if you want a strict sequential ranking wit
 
 ---
 
-Let me know if you'd like to include visual examples or export the updated README as a file. Here's the Git commit message for this update:
-
-```
-git commit -m "docs: update README with analytical SQL queries using GROUP BY and window functions"
-```
-
 
 🧠 Why This Matters
 Understanding SQL JOINs and analytical queries is essential for working effectively with relational databases.
